@@ -25,7 +25,7 @@ FreeTypeFont::FreeTypeFont():
     auto error = FT_Init_FreeType(&d->library);
     if ( error )
     {
-      tpDebug() << "Failed to initialize free type: " << ftErrorMessage(error);
+      tpWarning() << "Failed to initialize free type: " << ftErrorMessage(error);
     }
   }
 
@@ -36,11 +36,11 @@ FreeTypeFont::FreeTypeFont():
                              &d->face);
     if(error == FT_Err_Unknown_File_Format)
     {
-      tpDebug() << "The font file could be opened and read, but it appears that its font format is unsupported.";
+      tpWarning() << "The font file could be opened and read, but it appears that its font format is unsupported.";
     }
     else if ( error )
     {
-      tpDebug() << "New face error: " << ftErrorMessage(error);
+      tpWarning() << "New face error: " << ftErrorMessage(error);
     }
   }
 
@@ -52,7 +52,7 @@ FreeTypeFont::FreeTypeFont():
                                   200 );   /* vertical device resolution      */
     if ( error )
     {
-      tpDebug() << "Set char size error: " << ftErrorMessage(error);
+      tpWarning() << "Set char size error: " << ftErrorMessage(error);
     }
   }
 }
@@ -81,7 +81,7 @@ void FreeTypeFont::prepareGlyph(char16_t character, const std::function<void(con
 
   if(auto error = FT_Load_Glyph(d->face, glyphIndex, FT_LOAD_DEFAULT); error)
   {
-    tpDebug() << "Failed to load glyph: " << ftErrorMessage(error);
+    tpWarning() << "Failed to load glyph: " << ftErrorMessage(error);
     return;
   }
 
@@ -89,7 +89,7 @@ void FreeTypeFont::prepareGlyph(char16_t character, const std::function<void(con
   {
     if(auto error = FT_Render_Glyph(d->face->glyph, FT_RENDER_MODE_NORMAL); error)
     {
-      tpDebug() << "Failed to render glyph: " << ftErrorMessage(error);
+      tpWarning() << "Failed to render glyph: " << ftErrorMessage(error);
       return;
     }
   }
