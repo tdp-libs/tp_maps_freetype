@@ -21,6 +21,12 @@ struct FreeTypeFont::Private
 FreeTypeFont::FreeTypeFont():
   d(new Private())
 {
+#ifdef TDP_OSX
+  auto fontPath = "/Library/Fonts/Comic Sans MS.ttf";
+#else
+  auto fontPath = "/usr/share/fonts/liberation/LiberationSans-Bold.ttf";
+#endif
+
   {
     auto error = FT_Init_FreeType(&d->library);
     if ( error )
@@ -31,14 +37,14 @@ FreeTypeFont::FreeTypeFont():
 
   {
     auto error = FT_New_Face(d->library,
-                             "/usr/share/fonts/liberation/LiberationSans-Bold.ttf",
+                             fontPath,
                              0,
                              &d->face);
     if(error == FT_Err_Unknown_File_Format)
     {
       tpWarning() << "The font file could be opened and read, but it appears that its font format is unsupported.";
     }
-    else if ( error )
+    else if(error)
     {
       tpWarning() << "New face error: " << ftErrorMessage(error);
     }
