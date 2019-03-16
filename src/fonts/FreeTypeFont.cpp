@@ -100,7 +100,7 @@ void FreeTypeFont::prepareGlyph(char16_t character, const std::function<void(con
     }
   }
 
-  std::vector<tp_maps::Pixel> glyphData;
+  std::vector<TPPixel> glyphData;
   tp_maps::Glyph glyph;
   glyph.w             = int(d->face->glyph->bitmap.width);
   glyph.h             = int(d->face->glyph->bitmap.rows);
