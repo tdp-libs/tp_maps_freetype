@@ -21,7 +21,7 @@ struct FreeTypeFont::Private
 FreeTypeFont::FreeTypeFont():
   d(new Private())
 {
-#ifdef TDP_OSX
+#ifdef TP_OSX
   auto fontPath = "/Library/Fonts/Comic Sans MS.ttf";
 #else
   auto fontPath = "/usr/share/fonts/liberation/LiberationSans-Bold.ttf";
