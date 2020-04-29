@@ -1,7 +1,7 @@
 
 if(ANDROID)
-  set(FREETYPE_ROOT "/home/tom/projects/external/android-freetype2/android-freetype2/")
-  list(APPEND TP_LIBRARIES "-L${FREETYPE_ROOT}/debug/jni/${ANDROID_ABI}/")
+  get_filename_component(FREETYPE_ROOT "${CMAKE_CURRENT_LIST_DIR}/../../android-freetype2" ABSOLUTE)
+  list(APPEND TP_LIBRARIES "-L${FREETYPE_ROOT}/release/jni/${ANDROID_ABI}/")
 else()
 endif()
 
