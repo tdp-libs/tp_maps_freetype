@@ -2,6 +2,7 @@
 
 #include "tp_maps/textures/BasicTexture.h"
 
+#include "tp_utils/Resources.h"
 #include "tp_utils/DebugUtils.h"
 
 #include <ft2build.h>
@@ -18,15 +19,9 @@ struct FreeTypeFont::Private
 };
 
 //##################################################################################################
-FreeTypeFont::FreeTypeFont():
+FreeTypeFont::FreeTypeFont(LoadFrom loadFrom, const std::string& data):
   d(new Private())
 {
-#ifdef TP_OSX
-  auto fontPath = "/Library/Fonts/Comic Sans MS.ttf";
-#else
-  auto fontPath = "/usr/share/fonts/liberation/LiberationSans-Bold.ttf";
-#endif
-
   {
     auto error = FT_Init_FreeType(&d->library);
     if ( error )
@@ -35,27 +30,61 @@ FreeTypeFont::FreeTypeFont():
     }
   }
 
+  switch(loadFrom)
+  {
+  case LoadFrom::File: //---------------------------------------------------------------------------
   {
     auto error = FT_New_Face(d->library,
-                             fontPath,
+                             data.c_str(),
                              0,
                              &d->face);
     if(error == FT_Err_Unknown_File_Format)
-    {
       tpWarning() << "The font file could be opened and read, but it appears that its font format is unsupported.";
-    }
     else if(error)
-    {
       tpWarning() << "New face error: " << ftErrorMessage(error);
+
+    break;
+  }
+
+  case LoadFrom::Resource: //-----------------------------------------------------------------------
+  {
+    tp_utils::Resource resource = tp_utils::resource(data);
+
+    if(resource.data && resource.size>0)
+    {
+      auto error = FT_New_Memory_Face(d->library,
+                                      reinterpret_cast<const FT_Byte*>(resource.data),
+                                      FT_Long(resource.size),
+                                      0,
+                                      &d->face);
+      if(error)
+        tpWarning() << "New face error: " << ftErrorMessage(error);
     }
+    else
+      tpWarning() << "Failed to load resource: " << data;
+    break;
+  }
+
+  case LoadFrom::Data: //---------------------------------------------------------------------------
+  {
+    auto error = FT_New_Memory_Face(d->library,
+                                    reinterpret_cast<const FT_Byte*>(data.c_str()),
+                                    FT_Long(data.size()),
+                                    0,
+                                    &d->face);
+    if(error)
+      tpWarning() << "New face error: " << ftErrorMessage(error);
+
+    break;
+  }
   }
 
   {
-    auto error = FT_Set_Char_Size(d->face,    /* handle to face object           */
-                                  0,       /* char_width in 1/64th of points  */
-                                  4*64,    /* char_height in 1/64th of points */
-                                  200,     /* horizontal device resolution    */
-                                  200 );   /* vertical device resolution      */
+    auto error = FT_Set_Char_Size(d->face, // handle to face object
+                                  0,       // char_width in 1/64th of points
+                                  4*64,    // char_height in 1/64th of points
+                                  200,     // horizontal device resolution
+                                  200 );   // vertical device resolution
     if ( error )
     {
       tpWarning() << "Set char size error: " << ftErrorMessage(error);

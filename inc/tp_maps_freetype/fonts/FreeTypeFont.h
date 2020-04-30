@@ -9,11 +9,23 @@ namespace tp_maps_freetype
 {
 
 //##################################################################################################
+enum class LoadFrom
+{
+  File,
+  Resource,
+  Data
+};
+
+//##################################################################################################
 class TP_MAPS_FREETYPE_SHARED_EXPORT FreeTypeFont : public tp_maps::Font
 {
 public:
   //################################################################################################
-  FreeTypeFont();
+  /*!
+  \param loadFrom how to load the data.
+  \param data depending on loadFrom this could be a file path, resource path, or binary data.
+  */
+  FreeTypeFont(LoadFrom loadFrom, const std::string& data);
 
   //################################################################################################
   ~FreeTypeFont() override;
