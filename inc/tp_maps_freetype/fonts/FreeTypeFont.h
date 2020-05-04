@@ -25,7 +25,7 @@ public:
   \param loadFrom how to load the data.
   \param data depending on loadFrom this could be a file path, resource path, or binary data.
   */
-  FreeTypeFont(LoadFrom loadFrom, const std::string& data);
+  FreeTypeFont(LoadFrom loadFrom, const std::string& data, int pointSize);
 
   //################################################################################################
   ~FreeTypeFont() override;

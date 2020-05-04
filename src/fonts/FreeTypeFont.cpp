@@ -19,7 +19,7 @@ struct FreeTypeFont::Private
 };
 
 //##################################################################################################
-FreeTypeFont::FreeTypeFont(LoadFrom loadFrom, const std::string& data):
+FreeTypeFont::FreeTypeFont(LoadFrom loadFrom, const std::string& data, int pointSize):
   d(new Private())
 {
   {
@@ -80,11 +80,11 @@ FreeTypeFont::FreeTypeFont(LoadFrom loadFrom, const std::string& data):
   }
 
   {
-    auto error = FT_Set_Char_Size(d->face, // handle to face object
-                                  0,       // char_width in 1/64th of points
-                                  4*64,    // char_height in 1/64th of points
-                                  200,     // horizontal device resolution
-                                  200 );   // vertical device resolution
+    auto error = FT_Set_Char_Size(d->face,      // handle to face object
+                                  0,            // char_width in 1/64th of points
+                                  pointSize*64, // char_height in 1/64th of points
+                                  200,          // horizontal device resolution
+                                  200 );        // vertical device resolution
     if ( error )
     {
       tpWarning() << "Set char size error: " << ftErrorMessage(error);
@@ -151,9 +151,9 @@ void FreeTypeFont::prepareGlyph(char16_t character, const std::function<void(con
     {
       auto src = d->face->glyph->bitmap.buffer[srcAdd+i];
       auto& dst = glyphData[dstAdd+i];
-      dst.r = 0;
-      dst.g = 0;
-      dst.b = 0;
+      dst.r = 255;
+      dst.g = 255;
+      dst.b = 255;
       dst.a = src;
     }
   }
