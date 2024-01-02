@@ -1,9 +1,8 @@
 #include "tp_maps_freetype/fonts/FreeTypeFont.h"
 
-#include "tp_maps/textures/BasicTexture.h"
-
 #include "tp_utils/Resources.h"
 #include "tp_utils/DebugUtils.h"
+#include "tp_utils/TPPixel.h"
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -24,7 +23,7 @@ FreeTypeFont::FreeTypeFont(LoadFrom loadFrom, const std::string& data, int point
 {
   {
     auto error = FT_Init_FreeType(&d->library);
-    if ( error )
+    if(error)
     {
       tpWarning() << "Failed to initialize free type: " << ftErrorMessage(error);
     }
@@ -85,7 +84,7 @@ FreeTypeFont::FreeTypeFont(LoadFrom loadFrom, const std::string& data, int point
                                   pointSize*64, // char_height in 1/64th of points
                                   200,          // horizontal device resolution
                                   200 );        // vertical device resolution
-    if ( error )
+    if(error)
     {
       tpWarning() << "Set char size error: " << ftErrorMessage(error);
     }
